@@ -19,6 +19,7 @@ html, body {
   overflow: hidden;
 }
 
+/* AR 畫面 */
 a-scene {
   width: 100%;
   height: 100%;
@@ -27,7 +28,12 @@ a-scene {
   left: 0;
 }
 
-/* AR 文字卡片 */
+/* 隱藏 MindAR 預設 UI */
+.mindar-ui-loading,
+.mindar-ui-error,
+.mindar-ui-scanning {
+  display: none;
+}
 #custom-text {
   display: none;
 
@@ -65,7 +71,7 @@ a-scene {
 
 <body>
 
-<!-- AR 文字 -->
+<!-- AR 文字資訊 -->
 <div id="custom-text">
 白頭翁最大的特徵，就是頭上有白色羽毛，看起來像戴著白色帽子。
 
@@ -74,14 +80,15 @@ a-scene {
 白頭翁喜歡吃水果、花蜜與小昆蟲，是台灣常見的都市鳥類之一。
 </div>
 
-<!-- AR Scene -->
+<!-- AR 場景 -->
 <a-scene
   mindar-image="
-    imageTargetSrc: https://liaoyu2005-hub.github.io/bbb/targets.mind;
+    imageTargetSrc: targets.mind;
     autoStart: true;
-    uiLoading: yes;
-    uiScanning: yes;
-    uiError: yes;
+    showStats: false;
+    uiLoading: no;
+    uiScanning: no;
+    uiError: no;
   "
   color-space="sRGB"
   renderer="colorManagement: true, physicallyCorrectLights"
@@ -89,11 +96,14 @@ a-scene {
   device-orientation-permission-ui="enabled: false"
 >
 
-  <!-- camera -->
+  <!-- 相機 -->
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <!-- target -->
-  <a-entity id="target" mindar-image-target="targetIndex: 0"></a-entity>
+  <!-- 圖像目標 -->
+  <a-entity
+    id="target"
+    mindar-image-target="targetIndex: 1"
+  ></a-entity>
 
 </a-scene>
 
@@ -103,14 +113,14 @@ window.addEventListener("load", () => {
   const targetEl = document.querySelector("#target");
   const customDiv = document.querySelector("#custom-text");
 
+  // 掃到目標
   targetEl.addEventListener("targetFound", () => {
     customDiv.style.display = "block";
-    console.log("TARGET FOUND");
   });
 
+  // 目標消失
   targetEl.addEventListener("targetLost", () => {
     customDiv.style.display = "none";
-    console.log("TARGET LOST");
   });
 
 });
